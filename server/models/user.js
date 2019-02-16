@@ -27,6 +27,23 @@ var UserSchema = new mongoose.Schema({
   }]
 })
 
+UserSchema.statics.findByToken = function (token) {
+  var User = this
+  var decoded;
+
+  try {
+    decoded = jwt.verify(token,'eureka')
+  } catch (err) {
+    return Promise.reject(err)
+  }
+ 
+  return User.findOne({
+    '_id': decoded._id,
+    'tokens.token': token,
+    'tokens.access': 'auth'
+  })
+}
+
 UserSchema.methods.toJSON = function () {
   return _.pick(this.toObject(), ['_id','email'])
 }

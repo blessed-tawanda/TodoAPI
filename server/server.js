@@ -3,7 +3,7 @@ const {mongoose} = require('./db/mongoose')
 const {ObjectID} = require('mongodb')
 const {Todo} = require('./models/todo')
 const {User} = require('./models/user')
-
+const {authenticate} = require('./../middleware/authenticate')
 
 const _ = require('lodash')
 const express = require('express')
@@ -109,6 +109,10 @@ app.post('/users', (req,res) => {
   }).catch((err) => {
     res.status(400).send(err)
   })
+})
+
+app.get('/users/me', authenticate ,(req,res) => {
+  res.send(req.user)
 })
 
 app.listen(port, () => {
